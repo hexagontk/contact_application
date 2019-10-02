@@ -1,0 +1,11 @@
+
+version: '3'
+
+services:
+
+  hexagon-contact-application:
+    build:
+      context: .
+    ports:
+      - 9999:9090
+
