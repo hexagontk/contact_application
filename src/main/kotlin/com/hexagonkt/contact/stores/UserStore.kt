@@ -10,5 +10,5 @@ interface UserStore {
 
     fun findByUsername(username: String): User?
 
-    fun deleteById(id: String)
+    fun deleteById(id: String): Boolean
 }

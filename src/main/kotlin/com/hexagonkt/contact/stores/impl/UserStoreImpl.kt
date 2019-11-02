@@ -19,7 +19,7 @@ class UserStoreImpl : UserStore {
         return store.findOne(mapOf(User::username.name to username))
     }
 
-    override fun deleteById(id: String) {
-        store.deleteOne(id)
+    override fun deleteById(id: String): Boolean {
+        return store.deleteOne(id)
     }
 }

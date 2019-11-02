@@ -1,6 +1,9 @@
 package com.hexagonkt.contact.http.routes
 
-import com.hexagonkt.contact.http.dto.*
+import com.hexagonkt.contact.http.dto.LoginRequest
+import com.hexagonkt.contact.http.dto.RegisterRequest
+import com.hexagonkt.contact.http.dto.RegisterResponse
+import com.hexagonkt.contact.http.dto.toUserResponse
 import com.hexagonkt.contact.injector
 import com.hexagonkt.contact.services.JwtService
 import com.hexagonkt.contact.stores.UserStore
@@ -31,7 +34,7 @@ internal val userRouter = Router {
         userStore.create(user)
 
         val token = jwtService.sign(user.id)
-        val response = RegisterResponse(UserResponse(email, username, token))
+        val response = RegisterResponse(user.toUserResponse(token))
         send(201, response, Json, UTF_8)
     }
 
@@ -50,7 +53,7 @@ internal val userRouter = Router {
             send(401, "Unauthorized")
         } else {
             val token = jwtService.sign(user.id)
-            val response = LoginResponse(UserResponse(user.email, username, token))
+            val response = RegisterResponse(user.toUserResponse(token))
             ok(response, Json, UTF_8)
         }
     }

@@ -15,10 +15,10 @@ internal val router: Router = Router {
     path("/user", userRouter)
     path("/contacts", contactsRouter)
 
-    handleErrors();
+    handleErrors()
 }
 
-internal fun Router.authenticatePath() {
+internal fun Router.requireAuthentication() {
     before("/") { authenticate() }
     before("/*") { authenticate() }
 }

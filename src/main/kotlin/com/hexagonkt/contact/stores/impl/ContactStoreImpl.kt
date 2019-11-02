@@ -7,27 +7,27 @@ import com.hexagonkt.store.mongodb.MongoDbStore
 class ContactStoreImpl : ContactStore {
     private val store = MongoDbStore(Contact::class, Contact::id, mongoDatabase, "contacts")
 
-    override fun findAll(): List<Contact> {
-        return store.findAll()
-    }
-
-    override fun findOne(id: String): Contact? {
-        return store.findOne(id)
-    }
-
-    override fun insertOne(contact: Contact): String {
+    override fun create(contact: Contact): String {
         return store.insertOne(contact)
     }
 
-    override fun updateOne(id: String, updates: Map<String, Any?>): Boolean {
+    override fun update(id: String, updates: Map<String, Any?>): Boolean {
         return store.updateOne(id, updates)
     }
 
-    override fun deleteAll(): Boolean {
-        return store.deleteMany(emptyMap<String, Any>()) > 0
+    override fun findById(id: String): Contact? {
+        return store.findOne(id)
     }
 
-    override fun deleteOne(id: String): Boolean {
+    override fun findByUserId(userId: String): List<Contact> {
+        return store.findMany(mapOf(Contact::userId.name to userId))
+    }
+
+    override fun deleteById(id: String): Boolean {
         return store.deleteOne(id)
+    }
+
+    override fun deleteByUserId(userId: String): Long {
+        return store.deleteMany(mapOf(Contact::userId.name to userId))
     }
 }

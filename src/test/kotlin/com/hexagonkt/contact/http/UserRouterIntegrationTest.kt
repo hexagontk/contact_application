@@ -48,6 +48,9 @@ class UserRouterIntegrationTest : IntegrationTestBase() {
 
         //delete user
         client.deleteUser()
+        client.deleteUser {
+            assertEquals(401, statusCode)
+        }
 
         // user not found
         client.loginUser(jake) {

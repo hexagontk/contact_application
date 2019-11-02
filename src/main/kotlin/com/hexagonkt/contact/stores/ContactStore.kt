@@ -4,16 +4,15 @@ import com.hexagonkt.contact.stores.entities.Contact
 
 interface ContactStore {
 
-    fun findAll(): List<Contact>
+    fun create(contact: Contact): String
 
-    fun findOne(id: String): Contact?
+    fun update(id: String, updates: Map<String, Any?>): Boolean
 
-    fun insertOne(contact: Contact): String
+    fun findById(id: String): Contact?
 
-    fun updateOne(id: String, updates: Map<String, Any?>): Boolean
+    fun findByUserId(userId: String): List<Contact>
 
-    fun deleteAll(): Boolean
+    fun deleteById(id: String): Boolean
 
-    fun deleteOne(id: String): Boolean
-
+    fun deleteByUserId(userId: String): Long
 }
