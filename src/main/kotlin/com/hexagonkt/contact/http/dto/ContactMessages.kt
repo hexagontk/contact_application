@@ -2,7 +2,7 @@ package com.hexagonkt.contact.http.dto
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.hexagonkt.contact.stores.entities.Contact
-import com.hexagonkt.serialization.convertToMap
+import com.hexagonkt.converters.convert
 import java.time.LocalDateTime
 
 data class ContactRequest(
@@ -20,7 +20,7 @@ fun ContactRequest.toUpdatesMap(): Map<String, Any?> {
     val updatedAt = LocalDateTime.now()
     val updatedAtPair = Contact::updatedAt.name to updatedAt
 
-    return this.convertToMap().mapKeys { it.key.toString() } + updatedAtPair
+    return this.convert<Map<*, *>>().mapKeys { it.key.toString() } + updatedAtPair
 }
 
 data class ContactResponse(
@@ -59,4 +59,3 @@ fun Contact.toContactResponse() = ContactResponse(
     createdAt = this.createdAt,
     updatedAt = this.updatedAt
 )
-

@@ -10,11 +10,11 @@ import com.hexagonkt.contact.stores.UserStore
 import com.hexagonkt.contact.stores.entities.User
 import com.hexagonkt.contact.util.HashUtil
 import com.hexagonkt.contact.util.HashUtil.hashPassword
-import com.hexagonkt.http.server.Router
-import com.hexagonkt.serialization.Json
+import com.hexagonkt.http.handlers.path
+import com.hexagonkt.serialization.jackson.json.Json
 import kotlin.text.Charsets.UTF_8
 
-internal val userRouter = Router {
+internal val userRouter = path {
     val userStore: UserStore = injector.inject(UserStore::class)
     val jwtService: JwtService = injector.inject(JwtService::class)
 

@@ -8,11 +8,11 @@ import com.hexagonkt.contact.injector
 import com.hexagonkt.contact.stores.ContactStore
 import com.hexagonkt.contact.stores.entities.Contact
 import com.hexagonkt.contact.stores.entities.User
-import com.hexagonkt.http.server.Call
-import com.hexagonkt.http.server.Router
-import com.hexagonkt.serialization.Json
+import com.hexagonkt.http.handlers.path
+import com.hexagonkt.http.model.HttpCall
+import com.hexagonkt.serialization.jackson.json.Json
 
-internal val contactsRouter = Router {
+internal val contactsRouter = path {
     val contactStore: ContactStore = injector.inject(ContactStore::class)
 
     requireAuthentication()
@@ -78,7 +78,7 @@ internal val contactsRouter = Router {
     }
 }
 
-private fun Call.requireContact(contactStore: ContactStore): Contact {
+private fun HttpCall.requireContact(contactStore: ContactStore): Contact {
     val contactId = pathParameters["contactId"]
     return contactStore.findById(contactId) ?: halt(404, "Contact not found")
 }

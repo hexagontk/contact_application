@@ -1,11 +1,9 @@
 package com.hexagonkt.contact.stores.impl
 
-import com.hexagonkt.helpers.error
-import com.hexagonkt.settings.SettingsManager
-import com.mongodb.MongoClient
-import com.mongodb.MongoClientURI
+import com.hexagonkt.core.Jvm
+import com.mongodb.client.MongoClients
+import java.net.URL
 
-internal val mongoDatabase = MongoClientURI(SettingsManager.requireSetting("mongoDbUrl") as String).let {
-    MongoClient(it).getDatabase(it.database ?: error())
+internal val mongoDatabase = Jvm.systemSetting<String>("mongoDbUrl").let {
+    MongoClients.create(it).getDatabase(URL(it).path)
 }
-

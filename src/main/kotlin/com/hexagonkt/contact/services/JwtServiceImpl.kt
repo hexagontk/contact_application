@@ -3,13 +3,13 @@ package com.hexagonkt.contact.services
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.interfaces.DecodedJWT
-import com.hexagonkt.helpers.Resource
+import java.net.URL
 import java.security.KeyStore
 import java.security.interfaces.RSAPrivateKey
 import java.security.interfaces.RSAPublicKey
 
 class JwtServiceImpl(
-    keyStoreResource: Resource,
+    keyStoreResource: URL,
     keyStorePassword: String,
     private val keyAlias: String) : JwtService {
 
@@ -26,9 +26,9 @@ class JwtServiceImpl(
         verifier.verify(token)
 }
 
-fun loadKeyStore(resource: Resource, password: String): KeyStore =
+fun loadKeyStore(resource: URL, password: String): KeyStore =
     KeyStore.getInstance("PKCS12").apply {
-        load(resource.requireStream(), password.toCharArray())
+        load(resource.openStream(), password.toCharArray())
     }
 
 fun KeyStore.getPrivateKey(alias: String, password: String): RSAPrivateKey =

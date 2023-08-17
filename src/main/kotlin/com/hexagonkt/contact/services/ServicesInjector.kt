@@ -1,18 +1,17 @@
 package com.hexagonkt.contact.services
 
-import com.hexagonkt.helpers.Resource
-import com.hexagonkt.helpers.require
-import com.hexagonkt.injection.InjectionManager
-import com.hexagonkt.settings.SettingsManager
+import com.hexagonkt.core.Jvm
+import com.hexagonkt.injection.Module
+import java.net.URL
 
-fun configureServicesInjection(injectionManager: InjectionManager) {
-    injectionManager {
+fun configureServicesInjection(injectionManager: Module) {
+    injectionManager.apply {
         bind(JwtService::class) {
-            val jwtKeyStore = SettingsManager.settings.require("jwtKeyStore").toString()
-            val jwtKeyPassword = SettingsManager.settings.require("jwtKeyPassword").toString()
-            val jwtKeyAlias = SettingsManager.settings.require("jwtKeyAlias").toString()
+            val jwtKeyStore = Jvm.systemSetting<String>("jwtKeyStore")
+            val jwtKeyPassword = Jvm.systemSetting<String>("jwtKeyPassword")
+            val jwtKeyAlias = Jvm.systemSetting<String>("jwtKeyAlias")
 
-            JwtServiceImpl(Resource(jwtKeyStore), jwtKeyPassword, jwtKeyAlias)
+            JwtServiceImpl(URL(jwtKeyStore), jwtKeyPassword, jwtKeyAlias)
         }
     }
 }

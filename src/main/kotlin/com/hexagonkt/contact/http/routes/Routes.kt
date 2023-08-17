@@ -5,12 +5,12 @@ import com.hexagonkt.contact.injector
 import com.hexagonkt.contact.services.JwtService
 import com.hexagonkt.contact.stores.UserStore
 import com.hexagonkt.contact.stores.entities.User
-import com.hexagonkt.http.server.Call
-import com.hexagonkt.http.server.CorsSettings
-import com.hexagonkt.http.server.Router
+import com.hexagonkt.http.handlers.HttpHandler
+import com.hexagonkt.http.handlers.path
+import com.hexagonkt.http.server.callbacks.CorsCallback
 
-internal val router: Router = Router {
-    cors(CorsSettings())
+internal val router: HttpHandler = path {
+    filter("*", CorsCallback())
 
     path("/user", userRouter)
     path("/contacts", contactsRouter)

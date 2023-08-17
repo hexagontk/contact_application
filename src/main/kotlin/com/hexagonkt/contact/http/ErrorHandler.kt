@@ -2,15 +2,15 @@ package com.hexagonkt.contact.http
 
 import com.hexagonkt.helpers.CodedException
 import com.hexagonkt.helpers.MultipleException
-import com.hexagonkt.http.server.Call
-import com.hexagonkt.http.server.Router
-import com.hexagonkt.serialization.Json
+import com.hexagonkt.http.model.HttpCall
+import com.hexagonkt.http.handlers.HandlerBuilder
+import com.hexagonkt.serialization.jackson.json.Json
 
 data class ErrorResponse(val body: List<String> = listOf("Unknown error"))
 
 data class ErrorResponseRoot(val errors: ErrorResponse)
 
-fun Router.handleErrors() {
+fun HandlerBuilder.handleErrors() {
 
     setOf(401, 403, 404, 500).forEach { code ->
         error(code) { statusCodeHandler(it) }
@@ -20,7 +20,7 @@ fun Router.handleErrors() {
     error(Exception::class) { exceptionHandler(it) }
 }
 
-internal fun Call.statusCodeHandler(exception: CodedException) {
+internal fun HttpCall.statusCodeHandler(exception: CodedException) {
     @Suppress("MoveVariableDeclarationIntoWhen") // Required because response.body is an expression
     val body = response.body
 
@@ -32,14 +32,14 @@ internal fun Call.statusCodeHandler(exception: CodedException) {
     send(exception.code, ErrorResponseRoot(ErrorResponse(messages)), Json, Charsets.UTF_8)
 }
 
-internal fun Call.multipleExceptionHandler(error: Exception) {
+internal fun HttpCall.multipleExceptionHandler(error: Exception) {
     if (error is MultipleException) {
         val messages = error.causes.map { it.message ?: "<no message>" }
         send(500, ErrorResponseRoot(ErrorResponse(messages)), Json, Charsets.UTF_8)
     }
 }
 
-internal fun Call.exceptionHandler(error: Exception) {
+internal fun HttpCall.exceptionHandler(error: Exception) {
     val errorMessage = error.javaClass.simpleName + ": " + (error.message ?: "<no message>")
     send(500, ErrorResponseRoot(ErrorResponse(listOf(errorMessage))), Json, Charsets.UTF_8)
 }
