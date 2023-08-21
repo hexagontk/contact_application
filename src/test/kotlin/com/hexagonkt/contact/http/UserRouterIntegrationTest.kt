@@ -26,7 +26,7 @@ class UserRouterIntegrationTest : IntegrationTestBase() {
 
         // user not found
         client.loginUser(jake) {
-            assertEquals(404, statusCode)
+            assertEquals(404, status.code)
         }
 
         // register
@@ -34,12 +34,12 @@ class UserRouterIntegrationTest : IntegrationTestBase() {
 
         // already registered (conflict)
         client.registerUser(jake) {
-            assertEquals(409, statusCode)
+            assertEquals(409, status.code)
         }
 
         // invalid password
         client.loginUser(jakeWrongPass) {
-            assertEquals(401, statusCode)
+            assertEquals(401, status.code)
         }
 
         // login successfull (2x times)
@@ -49,12 +49,12 @@ class UserRouterIntegrationTest : IntegrationTestBase() {
         //delete user
         client.deleteUser()
         client.deleteUser {
-            assertEquals(401, statusCode)
+            assertEquals(401, status.code)
         }
 
         // user not found
         client.loginUser(jake) {
-            assertEquals(404, statusCode)
+            assertEquals(404, status.code)
         }
     }
 }
