@@ -3,11 +3,3 @@ serverName: contact-application
 bindAddress: 0.0.0.0
 bindPort: 9090
 contextPath: /api
-
-# MongoDB Settings
-mongoDbUrl: mongodb://localhost:27017/contacts
-
-# JWT setup
-jwtKeyStore: jwt-keys.p12
-jwtKeyAlias: jwt-key
-jwtKeyPassword: jwt-psw

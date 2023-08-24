@@ -9,9 +9,9 @@ gradle.rootProject {
         description = "Contact application backend api"
     }
 
-    extensions.gradleScripts = "https://raw.githubusercontent.com/hexagonkt/hexagon/3.0.0/gradle"
+    extensions.gradleScripts = "https://raw.githubusercontent.com/hexagonkt/hexagon/3.0.2/gradle"
 
-    extensions.hexagonVersion = "3.0.0"
+    extensions.hexagonVersion = "3.0.2"
     extensions.hexagonExtraVersion = "3.0.0"
 
     extensions.bcryptVersion="0.10.2"

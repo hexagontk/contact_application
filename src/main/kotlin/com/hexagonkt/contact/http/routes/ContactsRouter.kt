@@ -1,21 +1,26 @@
 package com.hexagonkt.contact.http.routes
 
+import com.hexagonkt.contact.createContactStore
 import com.hexagonkt.contact.http.dto.ContactRequest
 import com.hexagonkt.contact.http.dto.ContactsResponse
 import com.hexagonkt.contact.http.dto.toContactResponse
 import com.hexagonkt.contact.http.dto.toUpdatesMap
-import com.hexagonkt.contact.injector
 import com.hexagonkt.contact.stores.ContactStore
 import com.hexagonkt.contact.stores.entities.Contact
 import com.hexagonkt.contact.stores.entities.User
+import com.hexagonkt.core.media.APPLICATION_JSON
+import com.hexagonkt.core.require
+import com.hexagonkt.http.handlers.HttpContext
 import com.hexagonkt.http.handlers.path
-import com.hexagonkt.http.model.HttpCall
-import com.hexagonkt.serialization.jackson.json.Json
+import com.hexagonkt.http.model.CREATED_201
+import com.hexagonkt.http.model.ContentType
+import kotlin.text.Charsets.UTF_8
 
 internal val contactsRouter = path {
-    val contactStore: ContactStore = injector.inject(ContactStore::class)
+    val contactStore: ContactStore = createContactStore()
+    val contentType = ContentType(APPLICATION_JSON, charset = UTF_8)
 
-    requireAuthentication()
+    before("*") { authenticate() }
 
     // list
     get {
@@ -25,7 +30,7 @@ internal val contactsRouter = path {
         val response = ContactsResponse(
             contacts.map { it.toContactResponse() }
         )
-        ok(response, Json, Charsets.UTF_8)
+        ok(response, contentType = contentType)
     }
 
     // create
@@ -49,36 +54,36 @@ internal val contactsRouter = path {
 
         contactStore.create(contact)
 
-        send(201, contact.toContactResponse(), Json, Charsets.UTF_8)
+        send(CREATED_201, contact.toContactResponse(), contentType = contentType)
     }
 
     // get
     get("/{contactId}") {
-        val contact = requireContact(contactStore)
-        ok(contact.toContactResponse(), Json, Charsets.UTF_8)
+        val contact = requireContact(contactStore) ?: return@get notFound("Contact not found")
+        ok(contact.toContactResponse(), contentType = contentType)
     }
 
     // update
     put("/{contactId}") {
-        val contact = requireContact(contactStore)
+        val contact = requireContact(contactStore) ?: return@put notFound("Contact not found")
         val contactRequest = request.body(ContactRequest::class)
 
         contactStore.update(contact.id, contactRequest.toUpdatesMap())
 
         // re-read from db
-        val udpated = requireContact(contactStore)
-        ok(udpated.toContactResponse(), Json, Charsets.UTF_8)
+        val udpated = requireContact(contactStore) ?: return@put notFound("Contact not found")
+        ok(udpated.toContactResponse(), contentType = contentType)
     }
 
     //delete
     delete("/{contactId}") {
-        val contact = requireContact(contactStore)
+        val contact = requireContact(contactStore) ?: return@delete notFound("Contact not found")
         contactStore.deleteById(contact.id)
         ok()
     }
 }
 
-private fun HttpCall.requireContact(contactStore: ContactStore): Contact {
-    val contactId = pathParameters["contactId"]
-    return contactStore.findById(contactId) ?: halt(404, "Contact not found")
+private fun HttpContext.requireContact(contactStore: ContactStore): Contact? {
+    val contactId = pathParameters.require("contactId")
+    return contactStore.findById(contactId)
 }
