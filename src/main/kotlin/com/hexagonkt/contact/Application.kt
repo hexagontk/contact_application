@@ -6,21 +6,28 @@ import com.hexagonkt.contact.stores.ContactStore
 import com.hexagonkt.contact.stores.UserStore
 import com.hexagonkt.contact.stores.impl.ContactStoreImpl
 import com.hexagonkt.contact.stores.impl.UserStoreImpl
-import com.hexagonkt.core.Jvm
+import com.hexagonkt.core.Jvm.systemSettingOrNull
 import com.hexagonkt.http.server.HttpServer
+import com.hexagonkt.http.server.HttpServerSettings
 import com.hexagonkt.http.server.jetty.JettyServletAdapter
+import java.net.InetAddress
 import java.net.URL
 
 fun main() {
     val adapter = JettyServletAdapter()
-    val server = HttpServer(adapter, router)
+    val settings = HttpServerSettings(
+        bindAddress = (systemSettingOrNull("bindAddress") ?: "0.0.0.0").let(InetAddress::getByName),
+        bindPort = systemSettingOrNull("bindPort") ?: 9090,
+        contextPath = systemSettingOrNull("bindPort") ?: "/api",
+    )
+    val server = HttpServer(adapter, router, settings)
     server.start()
 }
 
 fun createJwtService(): JwtServiceImpl {
-    val jwtKeyStore = Jvm.systemSettingOrNull("jwtKeyStore") ?: "jwt-keys.p12"
-    val jwtKeyPassword = Jvm.systemSettingOrNull("jwtKeyPassword") ?: "jwt-key"
-    val jwtKeyAlias = Jvm.systemSettingOrNull("jwtKeyAlias") ?: "jwt-psw"
+    val jwtKeyStore = systemSettingOrNull("jwtKeyStore") ?: "jwt-keys.p12"
+    val jwtKeyPassword = systemSettingOrNull("jwtKeyPassword") ?: "jwt-key"
+    val jwtKeyAlias = systemSettingOrNull("jwtKeyAlias") ?: "jwt-psw"
 
     return JwtServiceImpl(URL(jwtKeyStore), jwtKeyPassword, jwtKeyAlias)
 }

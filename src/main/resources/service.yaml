@@ -1,5 +1,0 @@
-# HTTP Server Settings
-serverName: contact-application
-bindAddress: 0.0.0.0
-bindPort: 9090
-contextPath: /api

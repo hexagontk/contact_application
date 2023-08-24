@@ -45,9 +45,12 @@ internal val userRouter = path {
 
     // unregister
     delete {
-        val user = authenticate()
-        userStore.deleteById(user.id)
-        ok()
+        parseUser()
+            ?.let {
+                userStore.deleteById(it.id)
+                ok()
+            }
+            ?: unauthorized("Unauthorized")
     }
 
     post("/login") {

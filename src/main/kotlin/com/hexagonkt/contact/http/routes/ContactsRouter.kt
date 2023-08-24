@@ -20,7 +20,7 @@ internal val contactsRouter = path {
     val contactStore: ContactStore = createContactStore()
     val contentType = ContentType(APPLICATION_JSON, charset = UTF_8)
 
-    before("*") { authenticate() }
+    filter("*") { parseUser()?.let { next() } ?: unauthorized("Unauthorized") }
 
     // list
     get {
