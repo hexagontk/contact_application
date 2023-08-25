@@ -9,6 +9,7 @@ import com.hexagonkt.http.client.jetty.JettyClientAdapter
 import com.hexagonkt.http.model.*
 import com.hexagonkt.serialization.jackson.json.Json
 import com.hexagonkt.serialization.parseMap
+import com.hexagonkt.serialization.serialize
 import com.hexagonkt.serialization.toData
 import java.net.URL
 import kotlin.test.assertEquals
@@ -111,11 +112,11 @@ internal class ApplicationClient(val apiUrl: String) {
     }
 
     fun registerUser(user: User, callback: HttpResponsePort.() -> Unit) {
-        client().post("/user", user.toRegisterRequest().data()).apply(callback)
+        client().post("/user", user.toRegisterRequest().data().serialize(Json)).apply(callback)
     }
 
     fun loginUser(user: User, callback: HttpResponsePort.() -> Unit) {
-        client().post("/user/login", user.toLoginRequest().data()).apply(callback)
+        client().post("/user/login", user.toLoginRequest().data().serialize(Json)).apply(callback)
     }
 
     fun deleteUser(callback: HttpResponsePort.() -> Unit) {
@@ -127,7 +128,7 @@ internal class ApplicationClient(val apiUrl: String) {
     }
 
     fun createContact(contact: ContactRequest, callback: HttpResponsePort.() -> Unit) {
-        client().post("/contacts", contact.data()).apply(callback)
+        client().post("/contacts", contact.data().serialize(Json)).apply(callback)
     }
 
     fun getContact(contactId: String, callback: HttpResponsePort.() -> Unit) {
@@ -135,7 +136,7 @@ internal class ApplicationClient(val apiUrl: String) {
     }
 
     fun updateContact(contactId: String, contact: ContactRequest, callback: HttpResponsePort.() -> Unit) {
-        client().put("/contacts/$contactId", contact.data()).apply(callback)
+        client().put("/contacts/$contactId", contact.data().serialize(Json)).apply(callback)
     }
 
     fun deleteContact(contactId: String, callback: HttpResponsePort.() -> Unit) {
