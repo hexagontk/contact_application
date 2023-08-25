@@ -34,25 +34,43 @@ fun ContactRequest.toUpdatesMap(): Map<String, Any?> {
 }
 
 data class ContactResponse(
-    val id: String,
+    val id: String = "",
 
-    val firstName: String?,
-    val middleName: String?,
-    val lastName: String?,
+    val firstName: String? = null,
+    val middleName: String? = null,
+    val lastName: String? = null,
 
-    val email: String?,
-    val phone: String?,
-    val address: String?,
-    val note: String?,
+    val email: String? = null,
+    val phone: String? = null,
+    val address: String? = null,
+    val note: String? = null,
 
-    val createdAt: LocalDateTime,
-    val updatedAt: LocalDateTime
-)
+    val createdAt: LocalDateTime = LocalDateTime.now(),
+    val updatedAt: LocalDateTime = LocalDateTime.now(),
+) : Data<ContactResponse> {
+
+    override fun data(): Map<String, *> {
+        TODO("Not yet implemented")
+    }
+
+    override fun with(data: Map<String, *>): ContactResponse {
+        TODO("Not yet implemented")
+    }
+}
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class ContactsResponse(
-    val contacts: List<ContactResponse>
-)
+    val contacts: List<ContactResponse> = emptyList()
+) : Data<ContactsResponse> {
+
+    override fun data(): Map<String, *> {
+        TODO("Not yet implemented")
+    }
+
+    override fun with(data: Map<String, *>): ContactsResponse {
+        TODO("Not yet implemented")
+    }
+}
 
 fun Contact.toContactResponse() = ContactResponse(
     id = this.id,

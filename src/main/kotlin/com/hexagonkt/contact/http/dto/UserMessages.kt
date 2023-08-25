@@ -15,11 +15,23 @@ data class RegisterRequest(
     }
 }
 
-data class RegisterResponse(val user: UserResponse)
+data class RegisterResponse(
+    val user: UserResponse = UserResponse()
+) : Data<RegisterResponse> {
+
+    override fun data(): Map<String, *> {
+        TODO("Not yet implemented")
+    }
+
+    override fun with(data: Map<String, *>): RegisterResponse {
+        TODO("Not yet implemented")
+    }
+}
 
 data class LoginRequest(
     val username: String = "", val password: String = ""
 ) : Data<LoginRequest> {
+
     override fun data(): Map<String, *> {
         TODO("Not yet implemented")
     }
@@ -29,12 +41,21 @@ data class LoginRequest(
     }
 }
 
-data class LoginResponse(val user: UserResponse)
+data class LoginResponse(val user: UserResponse = UserResponse()) : Data<LoginResponse> {
+
+    override fun data(): Map<String, *> {
+        TODO("Not yet implemented")
+    }
+
+    override fun with(data: Map<String, *>): LoginResponse {
+        TODO("Not yet implemented")
+    }
+}
 
 data class UserResponse(
-    val email: String,
-    val username: String,
-    val token: String
+    val email: String = "",
+    val username: String = "",
+    val token: String = "",
 )
 
 fun User.toUserResponse(token: String) = UserResponse(

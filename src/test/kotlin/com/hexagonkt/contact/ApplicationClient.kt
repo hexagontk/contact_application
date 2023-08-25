@@ -7,7 +7,9 @@ import com.hexagonkt.http.client.HttpClient
 import com.hexagonkt.http.client.HttpClientSettings
 import com.hexagonkt.http.client.jetty.JettyClientAdapter
 import com.hexagonkt.http.model.*
-import com.hexagonkt.serialization.parse
+import com.hexagonkt.serialization.jackson.json.Json
+import com.hexagonkt.serialization.parseMap
+import com.hexagonkt.serialization.toData
 import java.net.URL
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -35,7 +37,7 @@ internal class ApplicationClient(val apiUrl: String) {
         registerUser(user) {
             assertEquals(201, status.code)
 
-            val response = bodyString().parse(RegisterResponse::class)
+            val response = bodyString().parseMap(Json).toData(::RegisterResponse)
             assertEquals(user.username, response.user.username)
             assertEquals(user.email, response.user.email)
             assertTrue(response.user.token.isNotBlank())
@@ -48,7 +50,7 @@ internal class ApplicationClient(val apiUrl: String) {
         loginUser(user) {
             assertEquals(200, status.code)
 
-            val response = bodyString().parse(LoginResponse::class)
+            val response = bodyString().parseMap(Json).toData(::LoginResponse)
             assertEquals(user.username, response.user.username)
             assertEquals(user.email, response.user.email)
             assertTrue(response.user.token.isNotBlank())
@@ -67,7 +69,7 @@ internal class ApplicationClient(val apiUrl: String) {
         listContacts {
             assertEquals(200, status.code)
 
-            val response = bodyString().parse(ContactsResponse::class)
+            val response = bodyString().parseMap(Json).toData(::ContactsResponse)
             response.apply(callback)
         }
     }
@@ -76,7 +78,7 @@ internal class ApplicationClient(val apiUrl: String) {
         getContact(contactId) {
             assertEquals(200, status.code)
 
-            val response = bodyString().parse(ContactResponse::class)
+            val response = bodyString().parseMap(Json).toData(::ContactResponse)
             response.apply(callback)
         }
     }
@@ -86,7 +88,7 @@ internal class ApplicationClient(val apiUrl: String) {
         createContact(contact) {
             assertEquals(201, status.code)
 
-            val response = bodyString().parse(ContactResponse::class)
+            val response = bodyString().parseMap(Json).toData(::ContactResponse)
             contactId = response.id
         }
         return contactId

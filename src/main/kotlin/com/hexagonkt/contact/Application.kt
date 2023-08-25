@@ -13,6 +13,8 @@ import com.hexagonkt.http.server.jetty.JettyServletAdapter
 import java.net.InetAddress
 import java.net.URL
 
+lateinit var server: HttpServer
+
 fun main() {
     val adapter = JettyServletAdapter()
     val settings = HttpServerSettings(
@@ -20,7 +22,7 @@ fun main() {
         bindPort = systemSettingOrNull("bindPort") ?: 9090,
         contextPath = systemSettingOrNull("bindPort") ?: "/api",
     )
-    val server = HttpServer(adapter, router, settings)
+    server = HttpServer(adapter, router, settings)
     server.start()
 }
 
