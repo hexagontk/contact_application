@@ -20,7 +20,7 @@ fun main() {
     val settings = HttpServerSettings(
         bindAddress = (systemSettingOrNull("bindAddress") ?: "0.0.0.0").let(InetAddress::getByName),
         bindPort = systemSettingOrNull("bindPort") ?: 9090,
-        contextPath = systemSettingOrNull("bindPort") ?: "/api",
+        contextPath = systemSettingOrNull("contextPath") ?: "/api",
     )
     server = HttpServer(adapter, router, settings)
     server.start()
@@ -28,8 +28,8 @@ fun main() {
 
 fun createJwtService(): JwtServiceImpl {
     val jwtKeyStore = systemSettingOrNull("jwtKeyStore") ?: "classpath:jwt-keys.p12"
-    val jwtKeyPassword = systemSettingOrNull("jwtKeyPassword") ?: "jwt-key"
-    val jwtKeyAlias = systemSettingOrNull("jwtKeyAlias") ?: "jwt-psw"
+    val jwtKeyPassword = systemSettingOrNull("jwtKeyPassword") ?: "21p.tknogaxeh"
+    val jwtKeyAlias = systemSettingOrNull("jwtKeyAlias") ?: "hexagonkt"
 
     return JwtServiceImpl(URL(jwtKeyStore), jwtKeyPassword, jwtKeyAlias)
 }

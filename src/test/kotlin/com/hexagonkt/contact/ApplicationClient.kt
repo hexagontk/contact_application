@@ -15,7 +15,11 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 internal class ApplicationClient(val apiUrl: String) {
-    private val client: HttpClient = HttpClient(JettyClientAdapter(), HttpClientSettings(URL(apiUrl), contentType = ContentType(APPLICATION_JSON)))
+    private val client: HttpClient = HttpClient(
+        JettyClientAdapter(),
+        HttpClientSettings(URL(apiUrl), contentType = ContentType(APPLICATION_JSON))
+    ).apply { start() }
+
     private var authenticatedClient: HttpClient? = null
 
     private fun User.toRegisterRequest(): RegisterRequest =
@@ -107,11 +111,11 @@ internal class ApplicationClient(val apiUrl: String) {
     }
 
     fun registerUser(user: User, callback: HttpResponsePort.() -> Unit) {
-        client().post("/user", user.toRegisterRequest()).apply(callback)
+        client().post("/user", user.toRegisterRequest().data()).apply(callback)
     }
 
     fun loginUser(user: User, callback: HttpResponsePort.() -> Unit) {
-        client().post("/user/login", user.toLoginRequest()).apply(callback)
+        client().post("/user/login", user.toLoginRequest().data()).apply(callback)
     }
 
     fun deleteUser(callback: HttpResponsePort.() -> Unit) {
@@ -123,7 +127,7 @@ internal class ApplicationClient(val apiUrl: String) {
     }
 
     fun createContact(contact: ContactRequest, callback: HttpResponsePort.() -> Unit) {
-        client().post("/contacts", contact).apply(callback)
+        client().post("/contacts", contact.data()).apply(callback)
     }
 
     fun getContact(contactId: String, callback: HttpResponsePort.() -> Unit) {
@@ -131,7 +135,7 @@ internal class ApplicationClient(val apiUrl: String) {
     }
 
     fun updateContact(contactId: String, contact: ContactRequest, callback: HttpResponsePort.() -> Unit) {
-        client().put("/contacts/$contactId", contact).apply(callback)
+        client().put("/contacts/$contactId", contact.data()).apply(callback)
     }
 
     fun deleteContact(contactId: String, callback: HttpResponsePort.() -> Unit) {
