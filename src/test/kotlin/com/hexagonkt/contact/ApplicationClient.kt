@@ -2,6 +2,7 @@ package com.hexagonkt.contact
 
 import com.hexagonkt.contact.http.dto.*
 import com.hexagonkt.contact.stores.entities.User
+import com.hexagonkt.core.logging.info
 import com.hexagonkt.core.media.APPLICATION_JSON
 import com.hexagonkt.http.client.HttpClient
 import com.hexagonkt.http.client.HttpClientSettings
@@ -30,7 +31,7 @@ internal class ApplicationClient(val apiUrl: String) {
         LoginRequest(username, password)
 
     private fun client(): HttpClient {
-        return authenticatedClient ?: client
+        return authenticatedClient?.apply { if (!started()) start() } ?: client
     }
 
     private fun onAuthenticated(token: String) {

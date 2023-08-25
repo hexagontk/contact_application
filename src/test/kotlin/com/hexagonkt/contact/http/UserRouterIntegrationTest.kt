@@ -42,7 +42,7 @@ class UserRouterIntegrationTest : IntegrationTestBase() {
             assertEquals(401, status.code)
         }
 
-        // login successfull (2x times)
+        // login successful (2x times)
         client.loginUser(jake)
         client.loginUser(jake)
 

@@ -18,6 +18,7 @@ import com.hexagonkt.http.model.CREATED_201
 import com.hexagonkt.http.model.ContentType
 import com.hexagonkt.serialization.jackson.json.Json
 import com.hexagonkt.serialization.parseMap
+import com.hexagonkt.serialization.serialize
 import com.hexagonkt.serialization.toData
 import kotlin.text.Charsets.UTF_8
 
@@ -44,7 +45,7 @@ internal val userRouter = path {
 
         val token = jwtService.sign(user.id)
         val response = RegisterResponse(user.toUserResponse(token))
-        send(CREATED_201, response.data(), contentType = contentType)
+        send(CREATED_201, response.data().serialize(Json), contentType = contentType)
     }
 
     // unregister
@@ -64,7 +65,7 @@ internal val userRouter = path {
         } else {
             val token = jwtService.sign(user.id)
             val response = RegisterResponse(user.toUserResponse(token))
-            ok(response.data(), contentType = contentType)
+            ok(response.data().serialize(Json), contentType = contentType)
         }
     }
 }

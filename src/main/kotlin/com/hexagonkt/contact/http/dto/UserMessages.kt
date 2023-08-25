@@ -2,6 +2,7 @@ package com.hexagonkt.contact.http.dto
 
 import com.hexagonkt.contact.stores.entities.User
 import com.hexagonkt.core.fieldsMapOfNotNull
+import com.hexagonkt.core.requireMap
 import com.hexagonkt.core.requireString
 import com.hexagonkt.serialization.Data
 
@@ -32,7 +33,7 @@ data class RegisterResponse(val user: UserResponse = UserResponse()) : Data<Regi
         fieldsMapOfNotNull(RegisterResponse::user to user.data())
 
     override fun with(data: Map<String, *>): RegisterResponse =
-        RegisterResponse(user = user.with(data))
+        RegisterResponse(user = user.with(data.requireMap(RegisterResponse::user)))
 }
 
 data class LoginRequest(
@@ -59,7 +60,7 @@ data class LoginResponse(val user: UserResponse = UserResponse()) : Data<LoginRe
         fieldsMapOfNotNull(LoginResponse::user to user.data())
 
     override fun with(data: Map<String, *>): LoginResponse =
-        LoginResponse(user = user.with(data))
+        LoginResponse(user = user.with(data.requireMap(LoginResponse::user)))
 }
 
 data class UserResponse(
