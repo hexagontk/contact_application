@@ -27,7 +27,7 @@ fun main() {
 }
 
 fun createJwtService(): JwtServiceImpl {
-    val jwtKeyStore = systemSettingOrNull("jwtKeyStore") ?: "jwt-keys.p12"
+    val jwtKeyStore = systemSettingOrNull("jwtKeyStore") ?: "classpath:jwt-keys.p12"
     val jwtKeyPassword = systemSettingOrNull("jwtKeyPassword") ?: "jwt-key"
     val jwtKeyAlias = systemSettingOrNull("jwtKeyAlias") ?: "jwt-psw"
 

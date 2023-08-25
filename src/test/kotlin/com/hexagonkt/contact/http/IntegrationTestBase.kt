@@ -1,6 +1,7 @@
 package com.hexagonkt.contact.http
 
 import com.hexagonkt.contact.ApplicationClient
+import com.hexagonkt.contact.main
 import com.hexagonkt.contact.server
 import com.hexagonkt.contact.stores.impl.mongoDatabase
 import org.bson.Document
@@ -19,6 +20,9 @@ open class IntegrationTestBase {
 
     @BeforeAll
     fun startup() {
+        System.setProperty("mongoDbUrl", "mongodb://localhost:27018/contacts")
+        System.setProperty("bindPort", "0")
+        main()
         server.start()
     }
 
