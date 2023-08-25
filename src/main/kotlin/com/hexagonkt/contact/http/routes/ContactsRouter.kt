@@ -14,13 +14,16 @@ import com.hexagonkt.http.handlers.HttpContext
 import com.hexagonkt.http.handlers.path
 import com.hexagonkt.http.model.CREATED_201
 import com.hexagonkt.http.model.ContentType
+import com.hexagonkt.serialization.jackson.json.Json
+import com.hexagonkt.serialization.parseMap
+import com.hexagonkt.serialization.toData
 import kotlin.text.Charsets.UTF_8
 
 internal val contactsRouter = path {
     val contactStore: ContactStore = createContactStore()
     val contentType = ContentType(APPLICATION_JSON, charset = UTF_8)
 
-    filter("*") { parseUser()?.let { next() } ?: unauthorized("Unauthorized") }
+    filter("*") { parseUser { next() } }
 
     // list
     get {
@@ -37,7 +40,7 @@ internal val contactsRouter = path {
     post {
         val user = attributes["user"] as User
 
-        val contactRequest = request.body(ContactRequest::class)
+        val contactRequest = request.bodyString().parseMap(Json).toData(::ContactRequest)
 
         val contact = Contact(
             userId = user.id,
@@ -66,13 +69,13 @@ internal val contactsRouter = path {
     // update
     put("/{contactId}") {
         val contact = requireContact(contactStore) ?: return@put notFound("Contact not found")
-        val contactRequest = request.body(ContactRequest::class)
+        val contactRequest = request.bodyString().parseMap(Json).toData(::ContactRequest)
 
         contactStore.update(contact.id, contactRequest.toUpdatesMap())
 
         // re-read from db
-        val udpated = requireContact(contactStore) ?: return@put notFound("Contact not found")
-        ok(udpated.toContactResponse(), contentType = contentType)
+        val updated = requireContact(contactStore) ?: return@put notFound("Contact not found")
+        ok(updated.toContactResponse(), contentType = contentType)
     }
 
     //delete

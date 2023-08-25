@@ -20,17 +20,17 @@ internal val router: HttpHandler = path {
     handleErrors()
 }
 
-internal fun HttpContext.parseUser(): User? {
+internal fun HttpContext.parseUser(block: (User) -> Unit): HttpContext {
     val userStore: UserStore = createUserStore()
     val jwtService: JwtService = createJwtService()
 
-    val token = request.headers["Authorization"]?.string() ?: return null
+    val token = request.headers["Authorization"]?.string() ?: return unauthorized("Unauthorized")
 
     val decodedJWT = jwtService.verify(token.removePrefix("Token").trim())
     val userId = decodedJWT.subject
-    val user = userStore.findById(userId) ?: return null
+    val user = userStore.findById(userId) ?: return unauthorized("Unauthorized")
 
-    attributes["user"] = user
+    block(user)
 
-    return user
+    return send(attributes = this.attributes + ("user" to user))
 }

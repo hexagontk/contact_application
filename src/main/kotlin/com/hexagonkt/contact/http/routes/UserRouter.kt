@@ -16,6 +16,9 @@ import com.hexagonkt.http.handlers.path
 import com.hexagonkt.http.model.CONFLICT_409
 import com.hexagonkt.http.model.CREATED_201
 import com.hexagonkt.http.model.ContentType
+import com.hexagonkt.serialization.jackson.json.Json
+import com.hexagonkt.serialization.parseMap
+import com.hexagonkt.serialization.toData
 import kotlin.text.Charsets.UTF_8
 
 internal val userRouter = path {
@@ -25,7 +28,8 @@ internal val userRouter = path {
 
     // register
     post {
-        val (email, username, password) = request.body(RegisterRequest::class)
+        val (email, username, password) =
+            request.bodyString().parseMap(Json).toData(::RegisterRequest)
 
         val existingUser = userStore.findByUsername(username)
         if (existingUser != null)
@@ -45,16 +49,14 @@ internal val userRouter = path {
 
     // unregister
     delete {
-        parseUser()
-            ?.let {
-                userStore.deleteById(it.id)
-                ok()
-            }
-            ?: unauthorized("Unauthorized")
+        parseUser {
+            userStore.deleteById(it.id)
+            ok()
+        }
     }
 
     post("/login") {
-        val (username, password) = request.body(LoginRequest::class)
+        val (username, password) = request.bodyString().parseMap(Json).toData(::LoginRequest)
         val user = userStore.findByUsername(username) ?: return@post notFound("User not found")
 
         if (!HashUtil.checkPassword(password, user.password)) {

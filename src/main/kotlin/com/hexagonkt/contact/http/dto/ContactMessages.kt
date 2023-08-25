@@ -3,6 +3,7 @@ package com.hexagonkt.contact.http.dto
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.hexagonkt.contact.stores.entities.Contact
 import com.hexagonkt.converters.convert
+import com.hexagonkt.serialization.Data
 import java.time.LocalDateTime
 
 data class ContactRequest(
@@ -14,7 +15,16 @@ data class ContactRequest(
     val phone: String? = null,
     val address: String? = null,
     val note: String? = null
-)
+) : Data<ContactRequest> {
+
+    override fun data(): Map<String, *> {
+        TODO("Not yet implemented")
+    }
+
+    override fun with(data: Map<String, *>): ContactRequest {
+        TODO("Not yet implemented")
+    }
+}
 
 fun ContactRequest.toUpdatesMap(): Map<String, Any?> {
     val updatedAt = LocalDateTime.now()
