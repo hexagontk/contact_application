@@ -41,9 +41,8 @@ fun HandlerBuilder.handleErrors() {
 }
 
 internal fun HttpContext.statusCodeHandler(): HttpContext {
-    val body = response.body
 
-    val messages = when (body) {
+    val messages = when (val body = response.body) {
         is List<*> -> body.mapNotNull { it?.toString() }
         else -> listOf(exception?.message ?: exception?.let { it::class.java.name} ?: RuntimeException::class.java.name)
     }
