@@ -2,7 +2,6 @@ package com.hexagonkt.contact.http.dto
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.hexagonkt.contact.stores.entities.Contact
-import com.hexagonkt.converters.convert
 import com.hexagonkt.core.fieldsMapOfNotNull
 import com.hexagonkt.core.getMapsOrEmpty
 import com.hexagonkt.core.getString
@@ -35,22 +34,22 @@ data class ContactRequest(
 
     override fun with(data: Map<String, *>): ContactRequest =
         ContactRequest(
-            firstName = data.getString(ContactRequest::firstName),
-            middleName = data.getString(ContactRequest::middleName),
-            lastName = data.getString(ContactRequest::lastName),
+            firstName = data.getString(ContactRequest::firstName) ?: firstName,
+            middleName = data.getString(ContactRequest::middleName) ?: middleName,
+            lastName = data.getString(ContactRequest::lastName) ?: lastName,
 
-            email = data.getString(ContactRequest::email),
-            phone = data.getString(ContactRequest::phone),
-            address = data.getString(ContactRequest::address),
-            note = data.getString(ContactRequest::note),
+            email = data.getString(ContactRequest::email) ?: email,
+            phone = data.getString(ContactRequest::phone) ?: phone,
+            address = data.getString(ContactRequest::address) ?: address,
+            note = data.getString(ContactRequest::note) ?: note,
         )
 }
 
 fun ContactRequest.toUpdatesMap(): Map<String, Any?> {
     val updatedAt = LocalDateTime.now()
-    val updatedAtPair = Contact::updatedAt.name to updatedAt
+    val updatedAtPair = Contact::updatedAt.name to updatedAt.toString()
 
-    return this.convert<Map<*, *>>().mapKeys { it.key.toString() } + updatedAtPair
+    return data() + updatedAtPair
 }
 
 data class ContactResponse(
@@ -81,20 +80,26 @@ data class ContactResponse(
             ContactResponse::phone to phone,
             ContactResponse::address to address,
             ContactResponse::note to note,
+
+            ContactResponse::createdAt to createdAt.toString(),
+            ContactResponse::updatedAt to updatedAt.toString(),
         )
 
     override fun with(data: Map<String, *>): ContactResponse =
         ContactResponse(
             id = data.requireString(ContactResponse::id),
 
-            firstName = data.getString(ContactResponse::firstName),
-            middleName = data.getString(ContactResponse::middleName),
-            lastName = data.getString(ContactResponse::lastName),
+            firstName = data.getString(ContactResponse::firstName) ?: firstName,
+            middleName = data.getString(ContactResponse::middleName) ?: middleName,
+            lastName = data.getString(ContactResponse::lastName) ?: lastName,
 
-            email = data.getString(ContactResponse::email),
-            phone = data.getString(ContactResponse::phone),
-            address = data.getString(ContactResponse::address),
-            note = data.getString(ContactResponse::note),
+            email = data.getString(ContactResponse::email) ?: email,
+            phone = data.getString(ContactResponse::phone) ?: phone,
+            address = data.getString(ContactResponse::address) ?: address,
+            note = data.getString(ContactResponse::note) ?: note,
+
+            createdAt = data.requireString(ContactResponse::createdAt).let(LocalDateTime::parse),
+            updatedAt = data.requireString(ContactResponse::updatedAt).let(LocalDateTime::parse),
         )
 }
 

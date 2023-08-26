@@ -4,12 +4,14 @@ import com.hexagonkt.contact.http.routes.router
 import com.hexagonkt.contact.services.JwtServiceImpl
 import com.hexagonkt.contact.stores.ContactStore
 import com.hexagonkt.contact.stores.UserStore
+import com.hexagonkt.contact.stores.entities.Contact
 import com.hexagonkt.contact.stores.impl.ContactStoreImpl
 import com.hexagonkt.contact.stores.impl.UserStoreImpl
 import com.hexagonkt.contact.stores.entities.User
 import com.hexagonkt.converters.ConvertersManager
 import com.hexagonkt.core.Jvm.systemSettingOrNull
 import com.hexagonkt.core.fieldsMapOfNotNull
+import com.hexagonkt.core.getString
 import com.hexagonkt.core.requireString
 import com.hexagonkt.http.server.HttpServer
 import com.hexagonkt.http.server.HttpServerSettings
@@ -64,26 +66,43 @@ fun createUserStore(): UserStore {
 
 fun createContactStore(): ContactStore {
 
-//    ConvertersManager.register(Contact::class to Map::class) {
-//        fieldsMapOfNotNull(
-//            Contact::id to it.id,
-//            Contact::userId to it.userId,
-//
-//            Contact::text to it.text,
-//            Contact::date to it.date.toString(),
-//            Contact::dateString to it.dateString,
-//        )
-//    }
-//
-//    ConvertersManager.register(Map::class to Contact::class) {
-//        Contact(
-//            id = it.requireString(Message::id),
-//            userId = it.requireString(Message::userId),
-//            text = it.requireString(Message::text),
-//            date = it.requireString(Message::date).let(LocalDateTime::parse),
-//            dateString = it.requireString(Message::dateString),
-//        )
-//    }
+    ConvertersManager.register(Contact::class to Map::class) {
+        fieldsMapOfNotNull(
+            Contact::id to it.id,
+            Contact::userId to it.userId,
+
+            Contact::firstName to it.firstName,
+            Contact::middleName to it.middleName,
+            Contact::lastName to it.lastName,
+
+            Contact::email to it.email,
+            Contact::phone to it.phone,
+            Contact::address to it.address,
+            Contact::note to it.note,
+
+            Contact::createdAt to it.createdAt.toString(),
+            Contact::updatedAt to it.updatedAt.toString(),
+        )
+    }
+
+    ConvertersManager.register(Map::class to Contact::class) {
+        Contact(
+            id = it.requireString(Contact::id),
+            userId = it.requireString(Contact::userId),
+
+            firstName = it.getString(Contact::firstName),
+            middleName = it.getString(Contact::middleName),
+            lastName = it.getString(Contact::lastName),
+
+            email = it.getString(Contact::email),
+            phone = it.getString(Contact::phone),
+            address = it.getString(Contact::address),
+            note = it.getString(Contact::note),
+
+            createdAt = it.requireString(Contact::createdAt).let(LocalDateTime::parse),
+            updatedAt = it.requireString(Contact::updatedAt).let(LocalDateTime::parse),
+        )
+    }
 
     return ContactStoreImpl()
 }

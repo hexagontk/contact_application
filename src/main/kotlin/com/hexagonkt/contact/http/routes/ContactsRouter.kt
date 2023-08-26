@@ -16,6 +16,7 @@ import com.hexagonkt.http.model.CREATED_201
 import com.hexagonkt.http.model.ContentType
 import com.hexagonkt.serialization.jackson.json.Json
 import com.hexagonkt.serialization.parseMap
+import com.hexagonkt.serialization.serialize
 import com.hexagonkt.serialization.toData
 import kotlin.text.Charsets.UTF_8
 
@@ -33,7 +34,7 @@ internal val contactsRouter = path {
         val response = ContactsResponse(
             contacts.map { it.toContactResponse() }
         )
-        ok(response.data(), contentType = contentType)
+        ok(response.data().serialize(Json), contentType = contentType)
     }
 
     // create
@@ -57,13 +58,13 @@ internal val contactsRouter = path {
 
         contactStore.create(contact)
 
-        send(CREATED_201, contact.toContactResponse().data(), contentType = contentType)
+        send(CREATED_201, contact.toContactResponse().data().serialize(Json), contentType = contentType)
     }
 
     // get
     get("/{contactId}") {
         val contact = requireContact(contactStore) ?: return@get notFound("Contact not found")
-        ok(contact.toContactResponse().data(), contentType = contentType)
+        ok(contact.toContactResponse().data().serialize(Json), contentType = contentType)
     }
 
     // update
@@ -75,7 +76,7 @@ internal val contactsRouter = path {
 
         // re-read from db
         val updated = requireContact(contactStore) ?: return@put notFound("Contact not found")
-        ok(updated.toContactResponse().data(), contentType = contentType)
+        ok(updated.toContactResponse().data().serialize(Json), contentType = contentType)
     }
 
     //delete

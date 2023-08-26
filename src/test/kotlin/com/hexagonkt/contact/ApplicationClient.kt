@@ -2,7 +2,6 @@ package com.hexagonkt.contact
 
 import com.hexagonkt.contact.http.dto.*
 import com.hexagonkt.contact.stores.entities.User
-import com.hexagonkt.core.logging.info
 import com.hexagonkt.core.media.APPLICATION_JSON
 import com.hexagonkt.http.client.HttpClient
 import com.hexagonkt.http.client.HttpClientSettings
@@ -16,7 +15,7 @@ import java.net.URL
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-internal class ApplicationClient(val apiUrl: String) {
+internal class ApplicationClient(private val apiUrl: String) {
     private val client: HttpClient = HttpClient(
         JettyClientAdapter(),
         HttpClientSettings(URL(apiUrl), contentType = ContentType(APPLICATION_JSON))
@@ -124,23 +123,23 @@ internal class ApplicationClient(val apiUrl: String) {
         client().delete("/user").apply(callback)
     }
 
-    fun listContacts(callback: HttpResponsePort.() -> Unit) {
+    private fun listContacts(callback: HttpResponsePort.() -> Unit) {
         client().get("/contacts").apply(callback)
     }
 
-    fun createContact(contact: ContactRequest, callback: HttpResponsePort.() -> Unit) {
+    private fun createContact(contact: ContactRequest, callback: HttpResponsePort.() -> Unit) {
         client().post("/contacts", contact.data().serialize(Json)).apply(callback)
     }
 
-    fun getContact(contactId: String, callback: HttpResponsePort.() -> Unit) {
+    private fun getContact(contactId: String, callback: HttpResponsePort.() -> Unit) {
         client().get("/contacts/$contactId").apply(callback)
     }
 
-    fun updateContact(contactId: String, contact: ContactRequest, callback: HttpResponsePort.() -> Unit) {
+    private fun updateContact(contactId: String, contact: ContactRequest, callback: HttpResponsePort.() -> Unit) {
         client().put("/contacts/$contactId", contact.data().serialize(Json)).apply(callback)
     }
 
-    fun deleteContact(contactId: String, callback: HttpResponsePort.() -> Unit) {
+    private fun deleteContact(contactId: String, callback: HttpResponsePort.() -> Unit) {
         client().delete("/contacts/$contactId").apply(callback)
     }
 }
