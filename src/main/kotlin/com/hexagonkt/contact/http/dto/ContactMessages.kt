@@ -5,7 +5,6 @@ import com.hexagonkt.contact.stores.entities.Contact
 import com.hexagonkt.core.fieldsMapOfNotNull
 import com.hexagonkt.core.getMapsOrEmpty
 import com.hexagonkt.core.getString
-import com.hexagonkt.core.requireString
 import com.hexagonkt.serialization.Data
 import java.time.LocalDateTime
 
@@ -87,7 +86,7 @@ data class ContactResponse(
 
     override fun with(data: Map<String, *>): ContactResponse =
         ContactResponse(
-            id = data.requireString(ContactResponse::id),
+            id = data.getString(ContactResponse::id) ?: id,
 
             firstName = data.getString(ContactResponse::firstName) ?: firstName,
             middleName = data.getString(ContactResponse::middleName) ?: middleName,
@@ -98,8 +97,8 @@ data class ContactResponse(
             address = data.getString(ContactResponse::address) ?: address,
             note = data.getString(ContactResponse::note) ?: note,
 
-            createdAt = data.requireString(ContactResponse::createdAt).let(LocalDateTime::parse),
-            updatedAt = data.requireString(ContactResponse::updatedAt).let(LocalDateTime::parse),
+            createdAt = data.getString(ContactResponse::createdAt)?.let(LocalDateTime::parse) ?: createdAt,
+            updatedAt = data.getString(ContactResponse::updatedAt)?.let(LocalDateTime::parse) ?: updatedAt,
         )
 }
 

@@ -1,9 +1,7 @@
 package com.hexagonkt.contact.http.dto
 
 import com.hexagonkt.contact.stores.entities.User
-import com.hexagonkt.core.fieldsMapOfNotNull
-import com.hexagonkt.core.requireMap
-import com.hexagonkt.core.requireString
+import com.hexagonkt.core.*
 import com.hexagonkt.serialization.Data
 
 data class RegisterRequest(
@@ -21,9 +19,9 @@ data class RegisterRequest(
 
     override fun with(data: Map<String, *>): RegisterRequest =
         RegisterRequest(
-            email = data.requireString(RegisterRequest::email),
-            username = data.requireString(RegisterRequest::username),
-            password = data.requireString(RegisterRequest::password),
+            email = data.getString(RegisterRequest::email) ?: email,
+            username = data.getString(RegisterRequest::username) ?: username,
+            password = data.getString(RegisterRequest::password) ?: password,
         )
 }
 
@@ -33,7 +31,7 @@ data class RegisterResponse(val user: UserResponse = UserResponse()) : Data<Regi
         fieldsMapOfNotNull(RegisterResponse::user to user.data())
 
     override fun with(data: Map<String, *>): RegisterResponse =
-        RegisterResponse(user = user.with(data.requireMap(RegisterResponse::user)))
+        RegisterResponse(user = data.getMap(RegisterResponse::user)?.let(user::with) ?: user)
 }
 
 data class LoginRequest(
@@ -49,8 +47,8 @@ data class LoginRequest(
 
     override fun with(data: Map<String, *>): LoginRequest =
         LoginRequest(
-            username = data.requireString(LoginRequest::username),
-            password = data.requireString(LoginRequest::password),
+            username = data.getString(LoginRequest::username) ?: username,
+            password = data.getString(LoginRequest::password) ?: password,
         )
 }
 
@@ -60,7 +58,7 @@ data class LoginResponse(val user: UserResponse = UserResponse()) : Data<LoginRe
         fieldsMapOfNotNull(LoginResponse::user to user.data())
 
     override fun with(data: Map<String, *>): LoginResponse =
-        LoginResponse(user = user.with(data.requireMap(LoginResponse::user)))
+        LoginResponse(user = data.getMap(LoginResponse::user)?.let(user::with) ?: user)
 }
 
 data class UserResponse(
@@ -78,9 +76,9 @@ data class UserResponse(
 
     override fun with(data: Map<String, *>): UserResponse =
         UserResponse(
-            email = data.requireString(UserResponse::email),
-            username = data.requireString(UserResponse::username),
-            token = data.requireString(UserResponse::token),
+            email = data.getString(UserResponse::email) ?: email,
+            username = data.getString(UserResponse::username) ?: username,
+            token = data.getString(UserResponse::token) ?: token,
         )
 }
 

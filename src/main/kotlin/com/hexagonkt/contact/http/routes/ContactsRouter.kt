@@ -34,7 +34,7 @@ internal val contactsRouter = path {
         val response = ContactsResponse(
             contacts.map { it.toContactResponse() }
         )
-        ok(response.data().serialize(Json), contentType = contentType)
+        ok(response.serialize(Json), contentType = contentType)
     }
 
     // create
@@ -58,13 +58,13 @@ internal val contactsRouter = path {
 
         contactStore.create(contact)
 
-        send(CREATED_201, contact.toContactResponse().data().serialize(Json), contentType = contentType)
+        send(CREATED_201, contact.toContactResponse().serialize(Json), contentType = contentType)
     }
 
     // get
     get("/{contactId}") {
         val contact = requireContact(contactStore) ?: return@get notFound("Contact not found")
-        ok(contact.toContactResponse().data().serialize(Json), contentType = contentType)
+        ok(contact.toContactResponse().serialize(Json), contentType = contentType)
     }
 
     // update
@@ -76,7 +76,7 @@ internal val contactsRouter = path {
 
         // re-read from db
         val updated = requireContact(contactStore) ?: return@put notFound("Contact not found")
-        ok(updated.toContactResponse().data().serialize(Json), contentType = contentType)
+        ok(updated.toContactResponse().serialize(Json), contentType = contentType)
     }
 
     //delete

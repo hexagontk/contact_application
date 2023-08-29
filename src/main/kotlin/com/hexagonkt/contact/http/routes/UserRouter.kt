@@ -45,7 +45,7 @@ internal val userRouter = path {
 
         val token = jwtService.sign(user.id)
         val response = RegisterResponse(user.toUserResponse(token))
-        send(CREATED_201, response.data().serialize(Json), contentType = contentType)
+        send(CREATED_201, response.serialize(Json), contentType = contentType)
     }
 
     // unregister
@@ -65,7 +65,7 @@ internal val userRouter = path {
         } else {
             val token = jwtService.sign(user.id)
             val response = RegisterResponse(user.toUserResponse(token))
-            ok(response.data().serialize(Json), contentType = contentType)
+            ok(response.serialize(Json), contentType = contentType)
         }
     }
 }
