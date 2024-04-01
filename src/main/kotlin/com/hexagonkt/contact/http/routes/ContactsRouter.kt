@@ -17,7 +17,6 @@ import com.hexagonkt.http.model.ContentType
 import com.hexagonkt.serialization.jackson.json.Json
 import com.hexagonkt.serialization.parseMap
 import com.hexagonkt.serialization.serialize
-import com.hexagonkt.serialization.toData
 import kotlin.text.Charsets.UTF_8
 
 internal val contactsRouter = path {
@@ -41,7 +40,7 @@ internal val contactsRouter = path {
     post {
         val user = attributes["user"] as User
 
-        val contactRequest = request.bodyString().parseMap(Json).toData(::ContactRequest)
+        val contactRequest = request.bodyString().parseMap(Json).let { ContactRequest().copy(it) }
 
         val contact = Contact(
             userId = user.id,
@@ -70,7 +69,7 @@ internal val contactsRouter = path {
     // update
     put("/{contactId}") {
         val contact = requireContact(contactStore) ?: return@put notFound("Contact not found")
-        val contactRequest = request.bodyString().parseMap(Json).toData(::ContactRequest)
+        val contactRequest = request.bodyString().parseMap(Json).let { ContactRequest().copy(it) }
 
         contactStore.update(contact.id, contactRequest.toUpdatesMap())
 

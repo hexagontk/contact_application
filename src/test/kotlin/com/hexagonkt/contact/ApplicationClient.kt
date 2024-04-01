@@ -10,7 +10,6 @@ import com.hexagonkt.http.model.*
 import com.hexagonkt.serialization.jackson.json.Json
 import com.hexagonkt.serialization.parseMap
 import com.hexagonkt.serialization.serialize
-import com.hexagonkt.serialization.toData
 import java.net.URL
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -42,7 +41,7 @@ internal class ApplicationClient(private val apiUrl: String) {
         registerUser(user) {
             assertEquals(201, status.code)
 
-            val response = bodyString().parseMap(Json).toData(::RegisterResponse)
+            val response = bodyString().parseMap(Json).let { RegisterResponse().copy(it) }
             assertEquals(user.username, response.user.username)
             assertEquals(user.email, response.user.email)
             assertTrue(response.user.token.isNotBlank())
@@ -55,7 +54,7 @@ internal class ApplicationClient(private val apiUrl: String) {
         loginUser(user) {
             assertEquals(200, status.code)
 
-            val response = bodyString().parseMap(Json).toData(::LoginResponse)
+            val response = bodyString().parseMap(Json).let { LoginResponse().copy(it) }
             assertEquals(user.username, response.user.username)
             assertEquals(user.email, response.user.email)
             assertTrue(response.user.token.isNotBlank())
@@ -74,7 +73,7 @@ internal class ApplicationClient(private val apiUrl: String) {
         listContacts {
             assertEquals(200, status.code)
 
-            val response = bodyString().parseMap(Json).toData(::ContactsResponse)
+            val response = bodyString().parseMap(Json).let { ContactsResponse().copy(it) }
             response.apply(callback)
         }
     }
@@ -83,7 +82,7 @@ internal class ApplicationClient(private val apiUrl: String) {
         getContact(contactId) {
             assertEquals(200, status.code)
 
-            val response = bodyString().parseMap(Json).toData(::ContactResponse)
+            val response = bodyString().parseMap(Json).let { ContactResponse().copy(it) }
             response.apply(callback)
         }
     }
@@ -93,7 +92,7 @@ internal class ApplicationClient(private val apiUrl: String) {
         createContact(contact) {
             assertEquals(201, status.code)
 
-            val response = bodyString().parseMap(Json).toData(::ContactResponse)
+            val response = bodyString().parseMap(Json).let { ContactResponse().copy(it) }
             contactId = response.id
         }
         return contactId
@@ -112,11 +111,11 @@ internal class ApplicationClient(private val apiUrl: String) {
     }
 
     fun registerUser(user: User, callback: HttpResponsePort.() -> Unit) {
-        client().post("/user", user.toRegisterRequest().data().serialize(Json)).apply(callback)
+        client().post("/user", user.toRegisterRequest().data.serialize(Json)).apply(callback)
     }
 
     fun loginUser(user: User, callback: HttpResponsePort.() -> Unit) {
-        client().post("/user/login", user.toLoginRequest().data().serialize(Json)).apply(callback)
+        client().post("/user/login", user.toLoginRequest().data.serialize(Json)).apply(callback)
     }
 
     fun deleteUser(callback: HttpResponsePort.() -> Unit) {
@@ -128,7 +127,7 @@ internal class ApplicationClient(private val apiUrl: String) {
     }
 
     private fun createContact(contact: ContactRequest, callback: HttpResponsePort.() -> Unit) {
-        client().post("/contacts", contact.data().serialize(Json)).apply(callback)
+        client().post("/contacts", contact.data.serialize(Json)).apply(callback)
     }
 
     private fun getContact(contactId: String, callback: HttpResponsePort.() -> Unit) {
@@ -136,7 +135,7 @@ internal class ApplicationClient(private val apiUrl: String) {
     }
 
     private fun updateContact(contactId: String, contact: ContactRequest, callback: HttpResponsePort.() -> Unit) {
-        client().put("/contacts/$contactId", contact.data().serialize(Json)).apply(callback)
+        client().put("/contacts/$contactId", contact.data.serialize(Json)).apply(callback)
     }
 
     private fun deleteContact(contactId: String, callback: HttpResponsePort.() -> Unit) {

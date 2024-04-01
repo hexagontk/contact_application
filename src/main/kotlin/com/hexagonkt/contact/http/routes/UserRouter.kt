@@ -19,7 +19,6 @@ import com.hexagonkt.http.model.ContentType
 import com.hexagonkt.serialization.jackson.json.Json
 import com.hexagonkt.serialization.parseMap
 import com.hexagonkt.serialization.serialize
-import com.hexagonkt.serialization.toData
 import kotlin.text.Charsets.UTF_8
 
 internal val userRouter = path {
@@ -30,7 +29,7 @@ internal val userRouter = path {
     // register
     post {
         val (email, username, password) =
-            request.bodyString().parseMap(Json).toData(::RegisterRequest)
+            request.bodyString().parseMap(Json).let { RegisterRequest().copy(it) }
 
         val existingUser = userStore.findByUsername(username)
         if (existingUser != null)
@@ -57,7 +56,7 @@ internal val userRouter = path {
     }
 
     post("/login") {
-        val (username, password) = request.bodyString().parseMap(Json).toData(::LoginRequest)
+        val (username, password) = request.bodyString().parseMap(Json).let { LoginRequest().copy(it) }
         val user = userStore.findByUsername(username) ?: return@post notFound("User not found")
 
         if (!HashUtil.checkPassword(password, user.password)) {

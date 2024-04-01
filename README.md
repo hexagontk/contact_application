@@ -1,7 +1,7 @@
 
 # Contact Application
 
-This is a sample backend application, written using [Hexagon](https://hexagonkt.com) toolkit. It provides simple REST API for managing contacts. Contacts are managed on a per-user basis. So the contacts operations are available after user login.  
+This is a sample backend application, written using [Hexagon](https://hexagontk.com) toolkit. It provides simple REST API for managing contacts. Contacts are managed on a per-user basis. So the contacts operations are available after user login.
 
 ## Usage
 
@@ -11,7 +11,7 @@ This project uses gradle as it's build tool. The `test` task requires mongodb in
 docker run --name contacts-db --rm -d -p 27018:27017 mongo:4.2.0
 ```
 
-Or you can skip tests with `-x test` arguments to corresponding build command. 
+Or you can skip tests with `-x test` arguments to corresponding build command.
 
 Usefull commands:
 * Build: `./gradlew build`
@@ -22,46 +22,46 @@ Usefull commands:
 
 ## Interaction
 
-As this project only exposes REST API, you need some external tool to interact with it. You can use `curl`, `HTTPie`, `Postman`, etc...  
+As this project only exposes REST API, you need some external tool to interact with it. You can use `curl`, `HTTPie`, `Postman`, etc...
 
 ## Endpoints
 
-Register user: 
+Register user:
 ```
 POST `/user`
 ```
 
-Login user: 
+Login user:
 ```
 POST `/user/login`
 ```
 
-Delete user: 
+Delete user:
 ```
 DELETE `/user`
 ```
 
-List contacts: 
+List contacts:
 ```
 GET `/contacts`
 ```
 
-Create contact: 
+Create contact:
 ```
 POST `/contacts`
 ```
 
-Get contact: 
+Get contact:
 ```
 GET `/contacts/{contactId}`
 ```
 
-Update contact: 
+Update contact:
 ```
 PUT `/contacts/{contactId}`
 ```
 
-Delete contact: 
+Delete contact:
 ```
 DELETE `/contacts/{contactId}`
 ```

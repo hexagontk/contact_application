@@ -19,7 +19,7 @@ data class ContactRequest(
     val note: String? = null
 ) : Data<ContactRequest> {
 
-    override fun data(): Map<String, *> =
+    override val data: Map<String, *> =
         fieldsMapOfNotNull(
             ContactRequest::firstName to firstName,
             ContactRequest::middleName to middleName,
@@ -31,7 +31,7 @@ data class ContactRequest(
             ContactRequest::note to note,
         )
 
-    override fun with(data: Map<String, *>): ContactRequest =
+    override fun copy(data: Map<String, *>): ContactRequest =
         ContactRequest(
             firstName = data.getString(ContactRequest::firstName) ?: firstName,
             middleName = data.getString(ContactRequest::middleName) ?: middleName,
@@ -48,7 +48,7 @@ fun ContactRequest.toUpdatesMap(): Map<String, Any?> {
     val updatedAt = LocalDateTime.now()
     val updatedAtPair = Contact::updatedAt.name to updatedAt.toString()
 
-    return data() + updatedAtPair
+    return data + updatedAtPair
 }
 
 data class ContactResponse(
@@ -67,7 +67,7 @@ data class ContactResponse(
     val updatedAt: LocalDateTime = LocalDateTime.now(),
 ) : Data<ContactResponse> {
 
-    override fun data(): Map<String, *> =
+    override val data: Map<String, *> =
         fieldsMapOfNotNull(
             ContactResponse::id to id,
 
@@ -84,7 +84,7 @@ data class ContactResponse(
             ContactResponse::updatedAt to updatedAt.toString(),
         )
 
-    override fun with(data: Map<String, *>): ContactResponse =
+    override fun copy(data: Map<String, *>): ContactResponse =
         ContactResponse(
             id = data.getString(ContactResponse::id) ?: id,
 
@@ -107,13 +107,13 @@ data class ContactsResponse(
     val contacts: List<ContactResponse> = emptyList()
 ) : Data<ContactsResponse> {
 
-    override fun data(): Map<String, *> =
-        fieldsMapOfNotNull(ContactsResponse::contacts to contacts.map { it.data() })
+    override val data: Map<String, *> =
+        fieldsMapOfNotNull(ContactsResponse::contacts to contacts.map { it.data })
 
-    override fun with(data: Map<String, *>): ContactsResponse =
+    override fun copy(data: Map<String, *>): ContactsResponse =
         ContactsResponse(
             contacts =
-                data.getMapsOrEmpty(ContactsResponse::contacts).map { ContactResponse().with(it) }
+                data.getMapsOrEmpty(ContactsResponse::contacts).map { ContactResponse().copy(it) }
         )
 }
 

@@ -10,14 +10,14 @@ data class RegisterRequest(
     val password: String = "",
 ) : Data<RegisterRequest> {
 
-    override fun data(): Map<String, *> =
+    override val data: Map<String, *> =
         fieldsMapOfNotNull(
             RegisterRequest::email to email,
             RegisterRequest::username to username,
             RegisterRequest::password to password,
         )
 
-    override fun with(data: Map<String, *>): RegisterRequest =
+    override fun copy(data: Map<String, *>): RegisterRequest =
         RegisterRequest(
             email = data.getString(RegisterRequest::email) ?: email,
             username = data.getString(RegisterRequest::username) ?: username,
@@ -27,11 +27,11 @@ data class RegisterRequest(
 
 data class RegisterResponse(val user: UserResponse = UserResponse()) : Data<RegisterResponse> {
 
-    override fun data(): Map<String, *> =
-        fieldsMapOfNotNull(RegisterResponse::user to user.data())
+    override val data: Map<String, *> =
+        fieldsMapOfNotNull(RegisterResponse::user to user.data)
 
-    override fun with(data: Map<String, *>): RegisterResponse =
-        RegisterResponse(user = data.getMap(RegisterResponse::user)?.let(user::with) ?: user)
+    override fun copy(data: Map<String, *>): RegisterResponse =
+        RegisterResponse(user = data.getMap(RegisterResponse::user)?.let(user::copy) ?: user)
 }
 
 data class LoginRequest(
@@ -39,13 +39,13 @@ data class LoginRequest(
     val password: String = ""
 ) : Data<LoginRequest> {
 
-    override fun data(): Map<String, *> =
+    override val data: Map<String, *> =
         fieldsMapOfNotNull(
             LoginRequest::username to username,
             LoginRequest::password to password,
         )
 
-    override fun with(data: Map<String, *>): LoginRequest =
+    override fun copy(data: Map<String, *>): LoginRequest =
         LoginRequest(
             username = data.getString(LoginRequest::username) ?: username,
             password = data.getString(LoginRequest::password) ?: password,
@@ -54,11 +54,11 @@ data class LoginRequest(
 
 data class LoginResponse(val user: UserResponse = UserResponse()) : Data<LoginResponse> {
 
-    override fun data(): Map<String, *> =
-        fieldsMapOfNotNull(LoginResponse::user to user.data())
+    override val data: Map<String, *> =
+        fieldsMapOfNotNull(LoginResponse::user to user.data)
 
-    override fun with(data: Map<String, *>): LoginResponse =
-        LoginResponse(user = data.getMap(LoginResponse::user)?.let(user::with) ?: user)
+    override fun copy(data: Map<String, *>): LoginResponse =
+        LoginResponse(user = data.getMap(LoginResponse::user)?.let(user::copy) ?: user)
 }
 
 data class UserResponse(
@@ -67,14 +67,14 @@ data class UserResponse(
     val token: String = "",
 ) : Data<UserResponse> {
 
-    override fun data(): Map<String, *> =
+    override val data: Map<String, *> =
         fieldsMapOfNotNull(
             UserResponse::email to email,
             UserResponse::username to username,
             UserResponse::token to token,
         )
 
-    override fun with(data: Map<String, *>): UserResponse =
+    override fun copy(data: Map<String, *>): UserResponse =
         UserResponse(
             email = data.getString(UserResponse::email) ?: email,
             username = data.getString(UserResponse::username) ?: username,
