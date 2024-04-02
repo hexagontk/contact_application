@@ -13,11 +13,11 @@ import com.hexagonkt.core.Jvm.systemSettingOrNull
 import com.hexagonkt.core.fieldsMapOfNotNull
 import com.hexagonkt.core.getString
 import com.hexagonkt.core.requireString
+import com.hexagonkt.core.urlOf
 import com.hexagonkt.http.server.HttpServer
 import com.hexagonkt.http.server.HttpServerSettings
 import com.hexagonkt.http.server.jetty.JettyServletAdapter
 import java.net.InetAddress
-import java.net.URL
 import java.time.LocalDateTime
 
 lateinit var server: HttpServer
@@ -38,7 +38,7 @@ fun createJwtService(): JwtServiceImpl {
     val jwtKeyPassword = systemSettingOrNull("jwtKeyPassword") ?: "21p.tknogaxeh"
     val jwtKeyAlias = systemSettingOrNull("jwtKeyAlias") ?: "hexagonkt"
 
-    return JwtServiceImpl(URL(jwtKeyStore), jwtKeyPassword, jwtKeyAlias)
+    return JwtServiceImpl(urlOf(jwtKeyStore), jwtKeyPassword, jwtKeyAlias)
 }
 
 fun createUserStore(): UserStore {

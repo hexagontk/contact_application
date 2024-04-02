@@ -3,6 +3,7 @@ package com.hexagonkt.contact
 import com.hexagonkt.contact.http.dto.*
 import com.hexagonkt.contact.stores.entities.User
 import com.hexagonkt.core.media.APPLICATION_JSON
+import com.hexagonkt.core.urlOf
 import com.hexagonkt.http.client.HttpClient
 import com.hexagonkt.http.client.HttpClientSettings
 import com.hexagonkt.http.client.jetty.JettyClientAdapter
@@ -10,14 +11,13 @@ import com.hexagonkt.http.model.*
 import com.hexagonkt.serialization.jackson.json.Json
 import com.hexagonkt.serialization.parseMap
 import com.hexagonkt.serialization.serialize
-import java.net.URL
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 internal class ApplicationClient(private val apiUrl: String) {
     private val client: HttpClient = HttpClient(
         JettyClientAdapter(),
-        HttpClientSettings(URL(apiUrl), contentType = ContentType(APPLICATION_JSON))
+        HttpClientSettings(urlOf(apiUrl), contentType = ContentType(APPLICATION_JSON))
     ).apply { start() }
 
     private var authenticatedClient: HttpClient? = null
@@ -33,8 +33,14 @@ internal class ApplicationClient(private val apiUrl: String) {
     }
 
     private fun onAuthenticated(token: String) {
-        val headers = Headers(Header("Authorization", "Token $token"))
-        authenticatedClient = HttpClient(JettyClientAdapter(), HttpClientSettings(URL(apiUrl), headers = headers, contentType = ContentType(APPLICATION_JSON)))
+        authenticatedClient = HttpClient(
+            JettyClientAdapter(),
+            HttpClientSettings(
+                urlOf(apiUrl),
+                contentType = ContentType(APPLICATION_JSON),
+                authorization = Authorization("Token", token)
+            )
+        )
     }
 
     fun registerUser(user: User) {
